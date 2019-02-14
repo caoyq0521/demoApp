@@ -101,40 +101,40 @@
     // }
     //
     // // 随意切换按钮
-    // function randomSwitchBtn( tag ) {
-    //   // api.ajax({
-    //   //     url: 'http://192.168.0.226:8909/api/V1.0/Device/DeviceInfoGetList',
-    //   //     method: 'post',
-    //   //     data: {},
-    //   //     headers: {
-    //   //       "X-APICloud-AppId": "A6005584828914",
-    //   //       "X-APICloud-AppKey": "FCD9627E-F21A-8BA8-367A-21ADDD4A3820"
-    //   //   }
-    //   // },function(ret, err){
-    //   //     if (ret) {
-    //   //         alert( JSON.stringify( ret ) );
-    //   //     } else {
-    //   //         alert( JSON.stringify( err ) );
-    //   //     }
-    //   // });
-    //
-    //     if( tag == $api.dom('#footer li.active') )return;
-    //     var eFootLis = $api.domAll('#footer li'),
-    //         eHeaderLis = $api.domAll('header li'),
-    //         index = 0;
-    //     for (var i = 0,len = eFootLis.length; i < len; i++) {
-    //         if( tag == eFootLis[i] ){
-    //             index = i;
-    //         }else{
-    //             $api.removeCls(eFootLis[i], 'active');
-    //             $api.removeCls(eHeaderLis[i], 'active');
-    //         }
-    //     }
-    //     $api.addCls( eFootLis[index], 'active');
-    //     $api.addCls( eHeaderLis[index], 'active');
-    //     api.setFrameGroupIndex({
-    //         name: 'group',
-    //         index: index
-    //     });
-    // }
+    function randomSwitchBtn( tag ) {
+      // api.ajax({
+      //     url: 'http://192.168.0.226:8909/api/V1.0/Device/DeviceInfoGetList',
+      //     method: 'post',
+      //     data: {},
+      //     headers: {
+      //       "X-APICloud-AppId": "A6005584828914",
+      //       "X-APICloud-AppKey": "FCD9627E-F21A-8BA8-367A-21ADDD4A3820"
+      //   }
+      // },function(ret, err){
+      //     if (ret) {
+      //         alert( JSON.stringify( ret ) );
+      //     } else {
+      //         alert( JSON.stringify( err ) );
+      //     }
+      // });
+
+        if( tag == $api.dom('#footer li.active') )return;
+        var eFootLis = $api.domAll('#footer li'),
+            eHeaderLis = $api.domAll('header li'),
+            index = 0;
+        for (var i = 0,len = eFootLis.length; i < len; i++) {
+            if( tag == eFootLis[i] ){
+                index = i;
+            }else{
+                $api.removeCls(eFootLis[i], 'active');
+                $api.removeCls(eHeaderLis[i], 'active');
+            }
+        }
+        $api.addCls( eFootLis[index], 'active');
+        $api.addCls( eHeaderLis[index], 'active');
+        api.setFrameGroupIndex({
+            name: 'group',
+            index: index
+        });
+    }
 </script>
