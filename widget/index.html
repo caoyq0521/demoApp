@@ -1,86 +1,195 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
     <title>底部导航</title>
-    <link rel="stylesheet" type="text/css" href="./css/api.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
     <style>
-        header{ background-color: #f2f2f2; }
-        header ul li { height: 50px; line-height: 50px; text-align: center; display: none; color: #323237; position: relative;font-size: 18px;  }
-        header ul li.active{ display: block; }
-        #footer{  background-color: #f2f2f2; }
-        #footer ul li{  padding-top: 36px; padding-bottom: 4px; background: url() no-repeat center 2px; background-size: auto 30px; text-align: center; }
-        #footer ul li.active{ color: #6ab494; }
-        #footer ul li:nth-child(1){ background-image: url(./image/bottombtn0101.png); }
-        #footer ul li:nth-child(2){ background-image: url(./image/bottombtn0201.png); }
-        #footer ul li:nth-child(3){ background-image: url(./image/bottombtn0301.png); }
-        #footer ul li:nth-child(4){ background-image: url(./image/bottombtn0401.png); }
-        #footer ul li:nth-child(1).active{ background-image: url(./image/bottombtn0102.png); }
-        #footer ul li:nth-child(2).active{ background-image: url(./image/bottombtn0202.png); }
-        #footer ul li:nth-child(3).active{ background-image: url(./image/bottombtn0302.png); }
-        #footer ul li:nth-child(4).active{ background-image: url(./image/bottombtn0402.png); }
-        .flex-con{
-          overflow: auto
+        header {
+            background-color: #f2f2f2;
+        }
+
+        header ul li {
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            display: none;
+            color: #323237;
+            position: relative;
+            font-size: 18px;
+        }
+
+        header ul li.active {
+            display: block;
+        }
+
+        #footer {
+            background-color: #f2f2f2;
+        }
+
+        #footer ul li {
+            padding-top: 36px;
+            padding-bottom: 4px;
+            background: url() no-repeat center 2px;
+            background-size: auto 30px;
+            text-align: center;
+        }
+
+        #footer ul li.active {
+            color: #6ab494;
+        }
+
+        #footer ul li:nth-child(1) {
+            background-image: url(./image/bottombtn0101.png);
+        }
+
+        #footer ul li:nth-child(2) {
+            background-image: url(./image/bottombtn0201.png);
+        }
+
+        #footer ul li:nth-child(3) {
+            background-image: url(./image/bottombtn0301.png);
+        }
+
+        #footer ul li:nth-child(4) {
+            background-image: url(./image/bottombtn0401.png);
+        }
+
+        #footer ul li:nth-child(1).active {
+            background-image: url(./image/bottombtn0102.png);
+        }
+
+        #footer ul li:nth-child(2).active {
+            background-image: url(./image/bottombtn0202.png);
+        }
+
+        #footer ul li:nth-child(3).active {
+            background-image: url(./image/bottombtn0302.png);
+        }
+
+        #footer ul li:nth-child(4).active {
+            background-image: url(./image/bottombtn0402.png);
+        }
+
+        .flex-con {
+            overflow: auto
         }
     </style>
 </head>
-<body>
-<div id="wrap" class="flex-wrap flex-vertical">
-    <header>
-        <ul>
-            <li class="border-b active" >云APICS</li>
-            <li class="border-b" >端API</li>
-            <li class="border-b" >开发</li>
-            <li class="border-b" >文档</li><div class="aui-tab">
-        </div>
-        </ul>
-    </header>
-    <div id="main" class="flex-con">
 
+<body>
+    <div id="wrap" class="flex-wrap flex-vertical">
+        <header>
+            <ul>
+                <li class="border-b active">云APICS</li>
+                <li class="border-b">端API</li>
+                <li class="border-b">开发</li>
+                <li class="border-b">文档</li>
+                <div class="aui-tab">
+                </div>
+            </ul>
+        </header>
+        <div id="main" class="flex-con">
+          <h1>{{number}}</h1>
+            <ul>
+              <li v-for='item in bluetoochArr'>{{item}}</li>
+            </ul>
+        </div>
+        <div id="footer" class="border-t">
+            <ul class="flex-wrap">
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con active">云API</li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">端API</li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">开发</li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">文档</li>
+            </ul>
+        </div>
     </div>
-    <div id="footer" class="border-t">
-        <ul class="flex-wrap" >
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con active" >云API</li>
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con" >端API</li>
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con" >开发</li>
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con" >文档</li>
-        </ul>
-    </div>
-</div>
 </body>
+
 </html>
 <script type="text/javascript" src="script/api.js"></script>
+<script type="text/javascript" src="script/vue.min.js"></script>
+<script type="text/javascript" src="script/basic.js"></script>
 <script type="text/javascript">
-    apiready = function () {
-        $api.fixStatusBar( $api.dom('header') );
-        var ble = api.require('ble');
+    let ble, bluetoochArr,vm;
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        ble = api.require('ble');
 
-        ble.initManager(function(ret) {
-            if (ret.state == "poweredOn") {
-                api.alert({ msg: "初始化成功" });
-            }
+        initManager();
+
+        api.setStatusBarStyle({
+            style: 'dark',
+            color: '#6ab494'
         });
-        // api.setStatusBarStyle({
-        //     style: 'dark',
-        //     color: '#6ab494'
-        // });
-        // funIniGroup();
+        vm = new Vue({
+            el: '#wrap',
+            data: {
+                title: '测试蓝牙mokuai',
+                bluetoochArr:[],
+                number:0
+            },
+            mounted(){
+              // this.getData();
+            },
+            methods:{
+              // getData(){
+              //   post('/Device/DeviceInfoGetList',{},(res)=>{
+              //     alert(JSON.stringify(res))
+              //   })
+              // }
+            }
+        })
+
+
     }
 
-    // function funIniGroup(){
+
+
+    // 初始化蓝牙管理器
+    function initManager() {
+        ble.initManager(function(ret) {
+            if (ret.state == "poweredOn") {
+                ble.scan({
+                    serviceUUIDS: ['', '']
+                }, function(ret) {
+                    if (ret.status) {
+                      vm.number+=1;
+                      
+                        alert('开始扫描');
+                        getPeripheral();
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    // 获取外围设备信息
+    function getPeripheral() {
+        ble.getPeripheral(function(ret) {
+            if (ret) {
+              vm.bluetoochArr.push(ret)
+            }
+        });
+
+    }
+    // function funIniGroup() {
     //
     //     var eHeaderLis = $api.domAll('header li'),
     //         frames = [];
-    //     for (var i = 0,len = eHeaderLis.length; i < len; i++) {
-    //             frames.push( {
-    //                 name: 'frame'+i,
-    //                 url: './html/frame'+i+'.html',
-    //                 bgColor : 'rgba(0,0,0,.2)',
-    //                 bounces:true
-    //             } )
+    //     for (var i = 0, len = eHeaderLis.length; i < len; i++) {
+    //         frames.push({
+    //             name: 'frame' + i,
+    //             url: './html/frame' + i + '.html',
+    //             bgColor: 'rgba(0,0,0,.2)',
+    //             bounces: true
+    //         })
     //     }
     //
     //
@@ -95,46 +204,46 @@
     //         },
     //         index: 0,
     //         frames: frames
-    //     }, function (ret, err) {
+    //     }, function(ret, err) {
     //
     //     });
     // }
-    //
-    // // 随意切换按钮
-    function randomSwitchBtn( tag ) {
-      // api.ajax({
-      //     url: 'http://192.168.0.226:8909/api/V1.0/Device/DeviceInfoGetList',
-      //     method: 'post',
-      //     data: {},
-      //     headers: {
-      //       "X-APICloud-AppId": "A6005584828914",
-      //       "X-APICloud-AppKey": "FCD9627E-F21A-8BA8-367A-21ADDD4A3820"
-      //   }
-      // },function(ret, err){
-      //     if (ret) {
-      //         alert( JSON.stringify( ret ) );
-      //     } else {
-      //         alert( JSON.stringify( err ) );
-      //     }
-      // });
 
-        if( tag == $api.dom('#footer li.active') )return;
-        var eFootLis = $api.domAll('#footer li'),
-            eHeaderLis = $api.domAll('header li'),
-            index = 0;
-        for (var i = 0,len = eFootLis.length; i < len; i++) {
-            if( tag == eFootLis[i] ){
-                index = i;
-            }else{
-                $api.removeCls(eFootLis[i], 'active');
-                $api.removeCls(eHeaderLis[i], 'active');
-            }
-        }
-        $api.addCls( eFootLis[index], 'active');
-        $api.addCls( eHeaderLis[index], 'active');
-        api.setFrameGroupIndex({
-            name: 'group',
-            index: index
-        });
-    }
+    // 随意切换按钮
+    // function randomSwitchBtn(tag) {
+    //     // api.ajax({
+    //     //     url: 'http://192.168.0.226:8909/api/V1.0/Device/DeviceInfoGetList',
+    //     //     method: 'post',
+    //     //     data: {},
+    //     //     headers: {
+    //     //       "X-APICloud-AppId": "A6005584828914",
+    //     //       "X-APICloud-AppKey": "FCD9627E-F21A-8BA8-367A-21ADDD4A3820"
+    //     //   }
+    //     // },function(ret, err){
+    //     //     if (ret) {
+    //     //         alert( JSON.stringify( ret ) );
+    //     //     } else {
+    //     //         alert( JSON.stringify( err ) );
+    //     //     }
+    //     // });
+    //
+    //     if (tag == $api.dom('#footer li.active')) return;
+    //     var eFootLis = $api.domAll('#footer li'),
+    //         eHeaderLis = $api.domAll('header li'),
+    //         index = 0;
+    //     for (var i = 0, len = eFootLis.length; i < len; i++) {
+    //         if (tag == eFootLis[i]) {
+    //             index = i;
+    //         } else {
+    //             $api.removeCls(eFootLis[i], 'active');
+    //             $api.removeCls(eHeaderLis[i], 'active');
+    //         }
+    //     }
+    //     $api.addCls(eFootLis[index], 'active');
+    //     $api.addCls(eHeaderLis[index], 'active');
+    //     api.setFrameGroupIndex({
+    //         name: 'group',
+    //         index: index
+    //     });
+    // }
 </script>
