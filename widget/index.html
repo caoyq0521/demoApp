@@ -78,6 +78,13 @@
         .flex-con {
             overflow: auto
         }
+
+        .git{
+            height: 50px;
+            background: #ccc;
+            text-align: center;
+            line-height: 50px;
+        }
     </style>
 </head>
 
@@ -101,6 +108,7 @@
             <ul>
               <li v-for='item in bluetoochArr' @click='showBlue(item)'>{{item}}</li>
             </ul>
+            <div onclick="gitText_text()" class="git">测试git功能</div>
         </div>
         <div id="footer" class="border-t">
             <ul class="flex-wrap">
@@ -161,7 +169,9 @@
 
     }
 
-
+function gitText_text(){
+    alert('成功')
+}
 
     // 初始化蓝牙管理器
     function initManager() {
@@ -194,35 +204,35 @@
         });
 
     }
-    function funIniGroup() {
+    // function funIniGroup() {
 
-        var eHeaderLis = $api.domAll('header li'),
-            frames = [];
-        for (var i = 0, len = eHeaderLis.length; i < len; i++) {
-            frames.push({
-                name: 'frame' + i,
-                url: './html/frame' + i + '.html',
-                bgColor: 'rgba(0,0,0,.2)',
-                bounces: true
-            })
-        }
+    //     var eHeaderLis = $api.domAll('header li'),
+    //         frames = [];
+    //     for (var i = 0, len = eHeaderLis.length; i < len; i++) {
+    //         frames.push({
+    //             name: 'frame' + i,
+    //             url: './html/frame' + i + '.html',
+    //             bgColor: 'rgba(0,0,0,.2)',
+    //             bounces: true
+    //         })
+    //     }
 
 
-        api.openFrameGroup({
-            name: 'group',
-            scrollEnabled: false,
-            rect: {
-                x: 0,
-                y: $api.dom('header').offsetHeight,
-                w: api.winWidth,
-                h: $api.dom('#main').offsetHeight
-            },
-            index: 0,
-            frames: frames
-        }, function(ret, err) {
+    //     api.openFrameGroup({
+    //         name: 'group',
+    //         scrollEnabled: false,
+    //         rect: {
+    //             x: 0,
+    //             y: $api.dom('header').offsetHeight,
+    //             w: api.winWidth,
+    //             h: $api.dom('#main').offsetHeight
+    //         },
+    //         index: 0,
+    //         frames: frames
+    //     }, function(ret, err) {
 
-        });
-    }
+    //     });
+    // }
 
 
     // 随意切换按钮
