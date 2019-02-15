@@ -83,7 +83,9 @@
 
 <body>
     <div id="wrap" class="flex-wrap flex-vertical">
+
         <header>
+
             <ul>
                 <li class="border-b active">云APICS</li>
                 <li class="border-b">端API</li>
@@ -93,10 +95,11 @@
                 </div>
             </ul>
         </header>
+
         <div id="main" class="flex-con">
           <h1>{{number}}</h1>
             <ul>
-              <li v-for='item in bluetoochArr'>{{item}}</li>
+              <li v-for='item in bluetoochArr' @click='showBlue(item)'>{{item}}</li>
             </ul>
         </div>
         <div id="footer" class="border-t">
@@ -142,6 +145,16 @@
               //     alert(JSON.stringify(res))
               //   })
               // }
+              showBlue(item){
+                api.openWin({
+                    name: 'blue',
+                    url: './html/blue.html',
+                    pageParam: {
+                        blueObj: item
+                    }
+                });
+
+              }
             }
         })
 
@@ -155,12 +168,11 @@
         ble.initManager(function(ret) {
             if (ret.state == "poweredOn") {
                 ble.scan({
-                    serviceUUIDS: ['', '']
+                    serviceUUIDs: []
                 }, function(ret) {
                     if (ret.status) {
-                      vm.number+=1;
-                      
                         alert('开始扫描');
+                        vm.number+=1;
                         getPeripheral();
                     }
                 });
@@ -174,76 +186,64 @@
     function getPeripheral() {
         ble.getPeripheral(function(ret) {
             if (ret) {
-              vm.bluetoochArr.push(ret)
+              ret.peripherals = ret.peripherals.filter(a=>{
+                return a.name && a.name.indexOf('SE') != -1;
+              })
+              vm.bluetoochArr.push(ret.peripherals)
             }
         });
 
     }
-    // function funIniGroup() {
-    //
-    //     var eHeaderLis = $api.domAll('header li'),
-    //         frames = [];
-    //     for (var i = 0, len = eHeaderLis.length; i < len; i++) {
-    //         frames.push({
-    //             name: 'frame' + i,
-    //             url: './html/frame' + i + '.html',
-    //             bgColor: 'rgba(0,0,0,.2)',
-    //             bounces: true
-    //         })
-    //     }
-    //
-    //
-    //     api.openFrameGroup({
-    //         name: 'group',
-    //         scrollEnabled: false,
-    //         rect: {
-    //             x: 0,
-    //             y: $api.dom('header').offsetHeight,
-    //             w: api.winWidth,
-    //             h: $api.dom('#main').offsetHeight
-    //         },
-    //         index: 0,
-    //         frames: frames
-    //     }, function(ret, err) {
-    //
-    //     });
-    // }
+    function funIniGroup() {
+
+        var eHeaderLis = $api.domAll('header li'),
+            frames = [];
+        for (var i = 0, len = eHeaderLis.length; i < len; i++) {
+            frames.push({
+                name: 'frame' + i,
+                url: './html/frame' + i + '.html',
+                bgColor: 'rgba(0,0,0,.2)',
+                bounces: true
+            })
+        }
+
+
+        api.openFrameGroup({
+            name: 'group',
+            scrollEnabled: false,
+            rect: {
+                x: 0,
+                y: $api.dom('header').offsetHeight,
+                w: api.winWidth,
+                h: $api.dom('#main').offsetHeight
+            },
+            index: 0,
+            frames: frames
+        }, function(ret, err) {
+
+        });
+    }
+
 
     // 随意切换按钮
-    // function randomSwitchBtn(tag) {
-    //     // api.ajax({
-    //     //     url: 'http://192.168.0.226:8909/api/V1.0/Device/DeviceInfoGetList',
-    //     //     method: 'post',
-    //     //     data: {},
-    //     //     headers: {
-    //     //       "X-APICloud-AppId": "A6005584828914",
-    //     //       "X-APICloud-AppKey": "FCD9627E-F21A-8BA8-367A-21ADDD4A3820"
-    //     //   }
-    //     // },function(ret, err){
-    //     //     if (ret) {
-    //     //         alert( JSON.stringify( ret ) );
-    //     //     } else {
-    //     //         alert( JSON.stringify( err ) );
-    //     //     }
-    //     // });
-    //
-    //     if (tag == $api.dom('#footer li.active')) return;
-    //     var eFootLis = $api.domAll('#footer li'),
-    //         eHeaderLis = $api.domAll('header li'),
-    //         index = 0;
-    //     for (var i = 0, len = eFootLis.length; i < len; i++) {
-    //         if (tag == eFootLis[i]) {
-    //             index = i;
-    //         } else {
-    //             $api.removeCls(eFootLis[i], 'active');
-    //             $api.removeCls(eHeaderLis[i], 'active');
-    //         }
-    //     }
-    //     $api.addCls(eFootLis[index], 'active');
-    //     $api.addCls(eHeaderLis[index], 'active');
-    //     api.setFrameGroupIndex({
-    //         name: 'group',
-    //         index: index
-    //     });
-    // }
+    function randomSwitchBtn(tag) {
+        if (tag == $api.dom('#footer li.active')) return;
+        var eFootLis = $api.domAll('#footer li'),
+            eHeaderLis = $api.domAll('header li'),
+            index = 0;
+        for (var i = 0, len = eFootLis.length; i < len; i++) {
+            if (tag == eFootLis[i]) {
+                index = i;
+            } else {
+                $api.removeCls(eFootLis[i], 'active');
+                $api.removeCls(eHeaderLis[i], 'active');
+            }
+        }
+        $api.addCls(eFootLis[index], 'active');
+        $api.addCls(eHeaderLis[index], 'active');
+        api.setFrameGroupIndex({
+            name: 'group',
+            index: index
+        });
+    }
 </script>
