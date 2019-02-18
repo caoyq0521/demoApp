@@ -1,96 +1,211 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-    <title>底部导航</title>
-    <link rel="stylesheet" type="text/css" href="../css/api.css" />
-    <link rel="stylesheet" type="text/css" href="../css/style.css" />
-    <style>
-        header {
-            background-color: #f2f2f2;
-        }
-
-        header ul li {
-            height: 50px;
-            line-height: 50px;
-            text-align: center;
-            display: none;
-            color: #323237;
-            position: relative;
-            font-size: 18px;
-        }
-
-        header ul li.active {
-            display: block;
-        }
-
-        #footer {
-            background-color: #f2f2f2;
-        }
-
-        #footer ul li {
-            padding-top: 36px;
-            padding-bottom: 4px;
-            background: url() no-repeat center 2px;
-            background-size: auto 30px;
-            text-align: center;
-        }
-
-        #footer ul li.active {
-            color: #6ab494;
-        }
-
-        #footer ul li:nth-child(1) {
-            background-image: url(./image/bottombtn0101.png);
-        }
-
-        #footer ul li:nth-child(2) {
-            background-image: url(./image/bottombtn0201.png);
-        }
-
-        #footer ul li:nth-child(3) {
-            background-image: url(./image/bottombtn0301.png);
-        }
-
-        #footer ul li:nth-child(4) {
-            background-image: url(./image/bottombtn0401.png);
-        }
-
-        #footer ul li:nth-child(1).active {
-            background-image: url(./image/bottombtn0102.png);
-        }
-
-        #footer ul li:nth-child(2).active {
-            background-image: url(./image/bottombtn0202.png);
-        }
-
-        #footer ul li:nth-child(3).active {
-            background-image: url(./image/bottombtn0302.png);
-        }
-
-        #footer ul li:nth-child(4).active {
-            background-image: url(./image/bottombtn0402.png);
-        }
-
-        .flex-con {
-            overflow: auto
-        }
+    <title>端API</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+     <script type="text/javascript" src="../script/api.js"></script>   
+     <style>
+        .empty{ text-align: center; padding: 120px 0; }
+        .btn { height : 50px ; width: 100px ; rotation: 10px; background-color: green;  } 
     </style>
 </head>
-
 <body>
-    <div id="wrap" >
+    <div class="empty">BlueTouch BLE 测试</div>
+   
+   
+   
+   <button class="btn btn-info btn-open" onclick="init()">打开蓝牙</button> 
+    <button class="btn btn-info btn-check" onclick="scan()">扫描设备</button>   
+    <button class="btn btn-info btn-check" onclick="getDevice()">设备信息</button>
+    <button class="btn btn-info btn-check" onclick="connect()">连接设备</button>    
+    <button class="btn btn-info btn-check" onclick="getserviceUUID()">获取Suuid</button>
+    <button class="btn btn-info btn-check" onclick="getCharacteristicUUID()">获取Cuuid</button>
+    <button class="btn btn-info btn-check" onclick="setEnable()">使能</button>
+    <button class="btn btn-info btn-check" onclick="setNotifydata()">接受数据</button>
+    <button class="btn btn-info btn-check" onclick="getData()">显示数值</button>
+    <div>消息</div>
+    <div id="message"></div>
 
-      <h1>测试</h1>
-    </div>
+   
+<script type="text/javascript">
+ apiready = function(){
+    // initBT();
+    ble = api.require('ble');
+};
+///////////下面是使用的是ble模块/////////////////
+ //设置全局变量
+ var peripheralUUID="",//CD60B3F9-5F5D-E805-2FDA-A8EA3848FD99",
+    serviceUUID="",//0000fee0-0000-1000-8000-00805f9b34fb",
+    characteristicUUID="FEE1",//0000fee1-0000-1000-8000-00805f9b34fb",
+    deviceValue="",
+    writeValue="";
+var ble = null;
+// 初始化蓝牙模块
+function init(){
+    ble.initManager(function(ret,err) {
+        console.log("ret:" + JSON.stringify(ret));
+        console.log("err:" + JSON.stringify(err));
+        if (ret.state == "poweredOn") {
+            api.alert({ msg: "初始化成功" + JSON.stringify(ret) });
+        } 
+    
+    });
+}
+// 扫描周围蓝牙设备
+function scan(){
+    // var ble = api.require('ble');
+    ble.scan({
+    }, function(ret) {
+        if (ret.status) {
+            alert('开始扫描');
+            getDevice()
+        }
+        if (!ret.status) {
+            alert('失败');
+        }
+        console.log("ret:" + JSON.stringify(ret));
+    }); 
+}
+// 获取当前扫描到的所有外围设备信息
+function getDevice(){
+    //var ble = api.require('ble');
+    ble.getPeripheral(function(ret) {
+        if (ret) {
+            api.alert({ msg: JSON.stringify(ret) });
+            var per=ret.peripherals;
+            for (var i = 0; i < per.length; i++) {
+                console.log(JSON.stringify(per[i]));
+                if (per[i].name=="BLE SPS") {
+                    peripheralUUID=per[i].uuid; 
+                }                           
+            }
+        }
+      console.log("ret:" + JSON.stringify(ret));
+    });
+}
+// 连接多台指定外围设备
+function connect(){
+    //var ble = api.require('ble');
+    ble.connectPeripherals({
+        peripheralUUIDs: [peripheralUUID]
+    }, function(ret, err) {
+        if (ret.status) {
+            alert(ret.peripheralUUID + "连接成功！");
+        }
+        if (!ret.status) {
+            alert("连接失败！");
+        }
+         console.log("connect==============");
+        console.log("ret:" + JSON.stringify(ret));
+        console.log("err:" + JSON.stringify(err));
+    });
+}
+// 根据指定的外围设备 UUID 读取其服务 UUID 和特征 UUID 
+function getserviceUUID(){
+    //var ble = api.require('ble');
+    console.log("peripheralUUID:" + peripheralUUID);
+    //服务的UUID
+    ble.discoverService({
+        peripheralUUID: peripheralUUID,
+    }, function(ret,err) {
+        if (ret) {
+            
+            serviceUUID="FEE0";//ret.services[3];
+            alert(serviceUUID);
+        }
+        if (err) {
+            getUUUID();
+        }
+        console.log("服务UUID==============");
+        console.log("ret:" + JSON.stringify(ret));
+        console.log("err:" + JSON.stringify(err));
+    }); 
+}   
+function getCharacteristicUUID(){
+  //特征的UUID
+    //var ble = api.require('ble');
+    ble.discoverCharacteristics({
+        peripheralUUID: peripheralUUID,
+        serviceUUID:serviceUUID,
+    }, function(ret,err) {
+        if (ret) {  
+            api.alert({ msg: JSON.stringify(ret) }); 
+            //characteristicUUID=ret.characteristics[5].uuid;
+        }
+       if (err) {
+            // getUUID();
+            api.alert("1");
+        }
+         console.log("getCharacteristicUUID==============");
+        console.log("ret:" + JSON.stringify(ret));
+        console.log("err:" + JSON.stringify(err));
+    })  
+}
+function setEnable(){
+console.log("使能.......");
+    ble.writeValueForCharacteristic({
+        peripheralUUID: peripheralUUID,
+        serviceUUID: serviceUUID,
+        characteristicUUID: characteristicUUID,
+        value: 0x01
+    },function(ret,err){
+        //coding...
+        console.log(JSON.stringify(ret));
+        console.log(JSON.stringify(err));
+    });
+}
+function setNotifydata(){
+console.log("setNotifydata.......");
+    ble.setNotify({
+       peripheralUUID: peripheralUUID,
+        serviceUUID: serviceUUID,
+        characteristicUUID: characteristicUUID,
+    },function(ret,err){
+        console.log(JSON.stringify(ret));
+        console.log(JSON.stringify(err));
+    });
+}
+// 根据指定的外围设备 UUID 及其服务 UUID 和特征 UUID 读取数据
+function getData(){
+    //alert("1");
+    //var ble = api.require('ble');
+    console.log("显示数据:" + peripheralUUID + "///" + serviceUUID + "////" + characteristicUUID);
+    ble.readValueForCharacteristic({
+        peripheralUUID: peripheralUUID,
+        serviceUUID: serviceUUID,
+        characteristicUUID: characteristicUUID,
+    }, function(ret) {
+       console.log("ret:" + JSON.stringify(ret));  
+       if (ret) {           
+            api.alert({ msg: JSON.stringify(ret) });
+            // deviceValue=ret.characteristic.value;
+            // api.alert(deiveValue);
+        }else{
+            api.alert({ msg: JSON.stringify(ret) });
+        }
+       
+    });
+}
+// 根据指定的外围设备 UUID 及其服务 UUID 和特征 UUID 写数据
+function writeData(){
+    var ble = api.require('ble');
+    ble.writeValueForCharacteristic({
+        peripheralUUID: '',
+        serviceUUID: '',
+        characteristicUUID: '',
+        value: ''
+    }, function(ret) {
+        if (ret) {
+            api.alert({ msg: JSON.stringify(ret) });
+        }
+                console.log("ret:" + JSON.stringify(ret));
+    });
+}
+    
+    </script>
 </body>
-
 </html>
-<script type="text/javascript" src="script/api.js"></script>
-<script type="text/javascript" src="script/vue.min.js"></script>
-<script type="text/javascript" src="script/basic.js"></script>
-
-</script>

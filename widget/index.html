@@ -9,83 +9,83 @@
     <link rel="stylesheet" type="text/css" href="./css/api.css" />
     <link rel="stylesheet" type="text/css" href="./css/style.css" />
     <style>
-        header {
-            background-color: #f2f2f2;
-        }
+    header {
+        background-color: #f2f2f2;
+    }
 
-        header ul li {
-            height: 50px;
-            line-height: 50px;
-            text-align: center;
-            display: none;
-            color: #323237;
-            position: relative;
-            font-size: 18px;
-        }
+    header ul li {
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        display: none;
+        color: #323237;
+        position: relative;
+        font-size: 18px;
+    }
 
-        header ul li.active {
-            display: block;
-        }
+    header ul li.active {
+        display: block;
+    }
 
-        #footer {
-            background-color: #f2f2f2;
-        }
+    #footer {
+        background-color: #f2f2f2;
+    }
 
-        #footer ul li {
-            padding-top: 36px;
-            padding-bottom: 4px;
-            background: url() no-repeat center 2px;
-            background-size: auto 30px;
-            text-align: center;
-        }
+    #footer ul li {
+        padding-top: 36px;
+        padding-bottom: 4px;
+        background: url() no-repeat center 2px;
+        background-size: auto 30px;
+        text-align: center;
+    }
 
-        #footer ul li.active {
-            color: #6ab494;
-        }
+    #footer ul li.active {
+        color: #6ab494;
+    }
 
-        #footer ul li:nth-child(1) {
-            background-image: url(./image/bottombtn0101.png);
-        }
+    #footer ul li:nth-child(1) {
+        background-image: url(./image/bottombtn0101.png);
+    }
 
-        #footer ul li:nth-child(2) {
-            background-image: url(./image/bottombtn0201.png);
-        }
+    #footer ul li:nth-child(2) {
+        background-image: url(./image/bottombtn0201.png);
+    }
 
-        #footer ul li:nth-child(3) {
-            background-image: url(./image/bottombtn0301.png);
-        }
+    #footer ul li:nth-child(3) {
+        background-image: url(./image/bottombtn0301.png);
+    }
 
-        #footer ul li:nth-child(4) {
-            background-image: url(./image/bottombtn0401.png);
-        }
+    #footer ul li:nth-child(4) {
+        background-image: url(./image/bottombtn0401.png);
+    }
 
-        #footer ul li:nth-child(1).active {
-            background-image: url(./image/bottombtn0102.png);
-        }
+    #footer ul li:nth-child(1).active {
+        background-image: url(./image/bottombtn0102.png);
+    }
 
-        #footer ul li:nth-child(2).active {
-            background-image: url(./image/bottombtn0202.png);
-        }
+    #footer ul li:nth-child(2).active {
+        background-image: url(./image/bottombtn0202.png);
+    }
 
-        #footer ul li:nth-child(3).active {
-            background-image: url(./image/bottombtn0302.png);
-        }
+    #footer ul li:nth-child(3).active {
+        background-image: url(./image/bottombtn0302.png);
+    }
 
-        #footer ul li:nth-child(4).active {
-            background-image: url(./image/bottombtn0402.png);
-        }
+    #footer ul li:nth-child(4).active {
+        background-image: url(./image/bottombtn0402.png);
+    }
 
-        .flex-con {
-            overflow: auto
-        }
+    .flex-con {
+        overflow: auto
+    }
 
-        .git{
-            height: 50px;
-            background: #ccc;
-            text-align: center;
-            line-height: 50px;
-        }
-    </style>
+    .git{
+        height: 50px;
+        background: #ccc;
+        text-align: center;
+        line-height: 50px;
+    }
+</style>
 </head>
 
 <body>
@@ -101,24 +101,29 @@
                 <div class="aui-tab">
                 </div>
             </ul>
+
         </header>
 
         <div id="main" class="flex-con">
           <h1>{{number}}</h1>
-            <ul>
-              <li v-for='item in bluetoochArr' @click='showBlue(item)'>{{item}}</li>
-            </ul>
-            <div onclick="gitText_text()" class="git">测试git功能</div>
-        </div>
-        <div id="footer" class="border-t">
-            <ul class="flex-wrap">
-                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con active">云API</li>
-                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">端API</li>
-                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">开发</li>
-                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">文档</li>
-            </ul>
-        </div>
+          <ul>
+              <li v-for='item in bluetoochArr'>{{item}}</li>
+          </ul>
+          <div class="git" @click='initBle'>初始化蓝牙</div>
+          <div class="git" @click='scanBle'>扫描蓝牙</div>
+          <div class="git" @click=getBle>获取蓝牙信息</div>
+          <div class="git" @click="showBlue()">蓝牙功能页面</div>
+          <div onclick="initManager()" class="git">蓝牙功能</div>
+      </div>
+      <div id="footer" class="border-t">
+        <ul class="flex-wrap">
+            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con active">云API</li>
+            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">端API</li>
+            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">开发</li>
+            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">文档</li>
+        </ul>
     </div>
+</div>
 </body>
 
 </html>
@@ -131,7 +136,6 @@
         $api.fixStatusBar($api.dom('header'));
         ble = api.require('ble');
 
-        initManager();
 
         api.setStatusBarStyle({
             style: 'dark',
@@ -146,64 +150,92 @@
             },
             mounted(){
               // this.getData();
+          },
+          methods:{
+            initBle(){
+                ble.initManager(function(ret){
+                    if(ret.state == 'poweredOn'){
+                        api.alert({msg:'初始化蓝牙成功'})
+                    }
+                })
             },
-            methods:{
+            scanBle(){
+                let that = this;
+                ble.scan({},function(ret){
+                    if(ret.status){
+                        alert('开始扫描')
+                    }
+                })
+            },
+            getBle(){
+                ble.getPeripheral(function(ret){
+                    if (ret) {
+                        ret.peripherals = ret.peripherals.filter(a=>{
+                            return a.name && a.name.indexOf('SE') != -1;
+                        })
+                        if(ret.peripherals.length>0){
+                            // ble.stopScan();
+
+                        }
+                        alert(JSON.stringify(ret))
+
+                        // vm.bluetoochArr.push(ret.peripherals)
+                    }
+                })
+            },
               // getData(){
               //   post('/Device/DeviceInfoGetList',{},(res)=>{
               //     alert(JSON.stringify(res))
               //   })
               // }
-              showBlue(item){
+              showBlue(){
                 api.openWin({
                     name: 'blue',
                     url: './html/blue.html',
-                    pageParam: {
-                        blueObj: item
-                    }
+                    //                           
                 });
-
-              }
             }
-        })
+        }
+    })
 
 
     }
 
-function gitText_text(){
-    alert('成功')
-}
+    function gitText_text(){
+        alert('成功完成')
+    }
 
     // 初始化蓝牙管理器
-    function initManager() {
-        ble.initManager(function(ret) {
-            if (ret.state == "poweredOn") {
-                ble.scan({
-                    serviceUUIDs: []
-                }, function(ret) {
-                    if (ret.status) {
-                        alert('开始扫描');
-                        vm.number+=1;
-                        getPeripheral();
-                    }
-                });
+    // function initManager() {
+    //     ble.initManager(function(ret) {
+    //         if (ret.state == "poweredOn") {
+    //             ble.scan({
+    //                 serviceUUIDs: []
+    //             }, function(ret) {
+    //                 if (ret.status) {
+    //                     vm.number+=1;
+    //                     alert('开始扫描');
+    //                     getPeripheral();
+    //                 }
+    //             });
 
-            }
-        });
+    //         }
+    //     });
 
-    }
+    // }
 
     // 获取外围设备信息
-    function getPeripheral() {
-        ble.getPeripheral(function(ret) {
-            if (ret) {
-              ret.peripherals = ret.peripherals.filter(a=>{
-                return a.name && a.name.indexOf('SE') != -1;
-              })
-              vm.bluetoochArr.push(ret.peripherals)
-            }
-        });
+    // function getPeripheral() {
+    //     ble.getPeripheral(function(ret) {
+    //         if (ret) {
+                // ret.peripherals = ret.peripherals.filter(a=>{
+                //     return a.name && a.name.indexOf('SE') != -1;
+                // })
+                // vm.bluetoochArr.push(ret.peripherals)
+    //         }
+    //   });
 
-    }
+    // }
     // function funIniGroup() {
 
     //     var eHeaderLis = $api.domAll('header li'),
@@ -239,8 +271,8 @@ function gitText_text(){
     function randomSwitchBtn(tag) {
         if (tag == $api.dom('#footer li.active')) return;
         var eFootLis = $api.domAll('#footer li'),
-            eHeaderLis = $api.domAll('header li'),
-            index = 0;
+        eHeaderLis = $api.domAll('header li'),
+        index = 0;
         for (var i = 0, len = eFootLis.length; i < len; i++) {
             if (tag == eFootLis[i]) {
                 index = i;

@@ -16,5 +16,4 @@ function post(url, data, successCallback) {
             alert(JSON.stringify(err));
         }
     });
-
 }
