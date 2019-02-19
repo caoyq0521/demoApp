@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="./css/api.css" />
     <link rel="stylesheet" type="text/css" href="./css/style.css" />
     <style>
-    header {
+        header {
         background-color: #f2f2f2;
     }
 
@@ -90,9 +90,7 @@
 
 <body>
     <div id="wrap" class="flex-wrap flex-vertical">
-
         <header>
-
             <ul>
                 <li class="border-b active">云APICS</li>
                 <li class="border-b">端API</li>
@@ -101,30 +99,28 @@
                 <div class="aui-tab">
                 </div>
             </ul>
-
         </header>
-
         <div id="main" class="flex-con">
-          <h1>{{number}}</h1>
-          <ul>
-              <li v-for='item in bluetoochArr'>{{item}}</li>
-          </ul>
-          <div class="git" @click='initBle'>初始化蓝牙</div>
-          <div class="git" @click='initBle'>初始化蓝牙</div>
-          <div class="git" @click='scanBle'>扫描蓝牙</div>
-          <div class="git" @click=getBle>获取蓝牙信息</div>
-          <div class="git" @click="showBlue()">蓝牙功能页面</div>
-          <div onclick="initManager()" class="git">蓝牙功能</div>
-      </div>
-      <div id="footer" class="border-t">
-        <ul class="flex-wrap">
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con active">云API</li>
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">端API</li>
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">开发</li>
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">文档</li>
-        </ul>
+            <h1>{{number}}</h1>
+            <ul>
+                <li v-for='(item,index) in bluetoochArr' @click='selectBleItem(index)'>{{item}}</li>
+            </ul>
+            <div class="git" @click='initBle'>初始化蓝牙</div>
+            <div class="git" @click='scanBle'>扫描蓝牙</div>
+            <div class="git" @click=getBle>获取蓝牙信息</div>
+            <div class="git" @click="showBlue()">蓝牙功能页面</div>
+            <div class="git" @click='opwnTextWin'>测试页面</div>
+            <div onclick="initManager()" class="git">蓝牙功能</div>
+        </div>
+        <div id="footer" class="border-t">
+            <ul class="flex-wrap">
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con active">云API</li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">端API</li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">开发</li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">文档</li>
+            </ul>
+        </div>
     </div>
-</div>
 </body>
 
 </html>
@@ -132,163 +128,177 @@
 <script type="text/javascript" src="script/vue.min.js"></script>
 <script type="text/javascript" src="script/basic.js"></script>
 <script type="text/javascript">
-    let ble, bluetoochArr,vm;
-    apiready = function() {
-        $api.fixStatusBar($api.dom('header'));
-        ble = api.require('ble');
+let ble, bluetoochArr, vm;
+apiready = function() {
+    $api.fixStatusBar($api.dom('header'));
+    ble = api.require('ble');
 
 
-        api.setStatusBarStyle({
-            style: 'dark',
-            color: '#6ab494'
-        });
-        vm = new Vue({
-            el: '#wrap',
-            data: {
-                title: '测试蓝牙mokuai',
-                bluetoochArr:[],
-                number:0
-            },
-            mounted(){
-              // this.getData();
-          },
-          methods:{
-            initBle(){
-                ble.initManager(function(ret){
-                    if(ret.state == 'poweredOn'){
-                        api.alert({msg:'初始化蓝牙成功'})
+    api.setStatusBarStyle({
+        style: 'dark',
+        color: '#6ab494'
+    });
+    vm = new Vue({
+        el: '#wrap',
+        data: {
+            title: '测试蓝牙mokuai',
+            bluetoochArr: [],
+            bluetoochObj: {},
+            number: 0
+        },
+        mounted() {
+
+        },
+        methods: {
+            initBle() {
+                ble.initManager({
+                    single: true,
+                }, function(ret) {
+                    if (ret.state == 'poweredOn') {
+                        api.alert({ msg: '初始化蓝牙成功' })
                     }
                 })
             },
-            scanBle(){
+            scanBle() {
                 let that = this;
-                ble.scan({},function(ret){
-                    if(ret.status){
-                        alert('开始扫描')
+                ble.scan({
+                    clean: true,
+                }, function(ret) {
+                    if (ret.status) {
+                        // alert('开始扫描')
+                        // ble.clean();
                     }
                 })
             },
-            getBle(){
-                ble.getPeripheral(function(ret){
+            getBle() {
+                let self = this;
+                ble.getPeripheral(function(ret) {
                     if (ret) {
-                        ret.peripherals = ret.peripherals.filter(a=>{
+                        ret.peripherals = ret.peripherals.filter(a => {
                             return a.name && a.name.indexOf('SE') != -1;
                         })
                         if(ret.peripherals.length>0){
-                            ble.clean();
-                            alert('已清空')
+                            ble.stopScan();
                         }
-                            alert('清空')
-
-                        alert(JSON.stringify(ret))
-
-                        // vm.bluetoochArr.push(ret.peripherals)
+                        for (let i = 0, len = ret.peripherals.length; i < len; i++) {
+                            vm.bluetoochArr.push(ret.peripherals[i])
+                        }
+                        self.scanBle();
                     }
                 })
             },
-              // getData(){
-              //   post('/Device/DeviceInfoGetList',{},(res)=>{
-              //     alert(JSON.stringify(res))
-              //   })
-              // }
-              showBlue(){
+            selectBleItem(index) {
+                api.openWin({
+                    name:'Text',
+                    url:'./html/enumId5.html',
+                    pageParam:{
+                        bluetouchObj:this.bluetoochArr[index]
+                    }
+                })
+            },
+            showBlue() {
                 api.openWin({
                     name: 'blue',
                     url: './html/blue.html',
-                    //
                 });
+            },
+            opwnTextWin() {
+                api.openWin({
+                    name: 'Text',
+                    url: './html/enumId5.html'
+                })
             }
         }
     })
 
 
-    }
+}
 
-    function gitText_text(){
-        alert('成功完成')
-    }
+function gitText_text() {
+    alert('成功完成')
+}
 
-    // 初始化蓝牙管理器
-    // function initManager() {
-    //     ble.initManager(function(ret) {
-    //         if (ret.state == "poweredOn") {
-    //             ble.scan({
-    //                 serviceUUIDs: []
-    //             }, function(ret) {
-    //                 if (ret.status) {
-    //                     vm.number+=1;
-    //                     alert('开始扫描');
-    //                     getPeripheral();
-    //                 }
-    //             });
+// 初始化蓝牙管理器
+// function initManager() {
+//     ble.initManager(function(ret) {
+//         if (ret.state == "poweredOn") {
+//             ble.scan({
+//                 serviceUUIDs: []
+//             }, function(ret) {
+//                 if (ret.status) {
+//                     vm.number+=1;
+//                     alert('开始扫描');
+//                     getPeripheral();
+//                 }
+//             });
 
-    //         }
-    //     });
+//         }
+//     });
 
-    // }
+// }
 
-    // 获取外围设备信息
-    // function getPeripheral() {
-    //     ble.getPeripheral(function(ret) {
-    //         if (ret) {
-                // ret.peripherals = ret.peripherals.filter(a=>{
-                //     return a.name && a.name.indexOf('SE') != -1;
-                // })
-                // vm.bluetoochArr.push(ret.peripherals)
-    //         }
-    //   });
+// 获取外围设备信息
+// function getPeripheral() {
+//     ble.getPeripheral(function(ret) {
+//         if (ret) {
+// ret.peripherals = ret.peripherals.filter(a=>{
+//     return a.name && a.name.indexOf('SE') != -1;
+// })
+// vm.bluetoochArr.push(ret.peripherals)
+//         }
+//   });
 
-    // }
-    // function funIniGroup() {
+// }
+// function funIniGroup() {
 
-    //     var eHeaderLis = $api.domAll('header li'),
-    //         frames = [];
-    //     for (var i = 0, len = eHeaderLis.length; i < len; i++) {
-    //         frames.push({
-    //             name: 'frame' + i,
-    //             url: './html/frame' + i + '.html',
-    //             bgColor: 'rgba(0,0,0,.2)',
-    //             bounces: true
-    //         })
-    //     }
-
-
-    //     api.openFrameGroup({
-    //         name: 'group',
-    //         scrollEnabled: false,
-    //         rect: {
-    //             x: 0,
-    //             y: $api.dom('header').offsetHeight,
-    //             w: api.winWidth,
-    //             h: $api.dom('#main').offsetHeight
-    //         },
-    //         index: 0,
-    //         frames: frames
-    //     }, function(ret, err) {
-
-    //     });
-    // }
+//     var eHeaderLis = $api.domAll('header li'),
+//         frames = [];
+//     for (var i = 0, len = eHeaderLis.length; i < len; i++) {
+//         frames.push({
+//             name: 'frame' + i,
+//             url: './html/frame' + i + '.html',
+//             bgColor: 'rgba(0,0,0,.2)',
+//             bounces: true
+//         })
+//     }
 
 
-    // 随意切换按钮
-    function randomSwitchBtn(tag) {
-        if (tag == $api.dom('#footer li.active')) return;
-        var eFootLis = $api.domAll('#footer li'),
+//     api.openFrameGroup({
+//         name: 'group',
+//         scrollEnabled: false,
+//         rect: {
+//             x: 0,
+//             y: $api.dom('header').offsetHeight,
+//             w: api.winWidth,
+//             h: $api.dom('#main').offsetHeight
+//         },
+//         index: 0,
+//         frames: frames
+//     }, function(ret, err) {
+
+//     });
+// }
+
+
+// 随意切换按钮
+function randomSwitchBtn(tag) {
+    if (tag == $api.dom('#footer li.active')) return;
+    var eFootLis = $api.domAll('#footer li'),
         eHeaderLis = $api.domAll('header li'),
         index = 0;
-        for (var i = 0, len = eFootLis.length; i < len; i++) {
-            if (tag == eFootLis[i]) {
-                index = i;
-            } else {
-                $api.removeCls(eFootLis[i], 'active');
-                $api.removeCls(eHeaderLis[i], 'active');
-            }
+    for (var i = 0, len = eFootLis.length; i < len; i++) {
+        if (tag == eFootLis[i]) {
+            index = i;
+        } else {
+            $api.removeCls(eFootLis[i], 'active');
+            $api.removeCls(eHeaderLis[i], 'active');
         }
-        $api.addCls(eFootLis[index], 'active');
-        $api.addCls(eHeaderLis[index], 'active');
-        api.setFrameGroupIndex({
-            name: 'group',
-            index: index
-        });
     }
+    $api.addCls(eFootLis[index], 'active');
+    $api.addCls(eHeaderLis[index], 'active');
+    api.setFrameGroupIndex({
+        name: 'group',
+        index: index
+    });
+}
 </script>

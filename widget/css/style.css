@@ -12,3 +12,17 @@ html,body {  font-size:14px; height:100%;  }
 .border-b:after{ top:auto; bottom:0;  }
 
 #wrap{ height: 100%; }
+
+.flex-spaceBetween{
+	justify-content: space-between;
+}
+
+.flex-center{
+	align-items: center;
+	justify-content: center;
+}
+
+.flex-columnCenter{
+	flex-direction: column;
+	justify-content: center;
+}

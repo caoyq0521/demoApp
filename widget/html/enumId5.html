@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>设备接入</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <style type="text/css">
+    .container {
+        position: relative;
+        background: #eee;
+    }
+
+    .categoryList {
+        padding: 10px;
+    }
+
+    .categaryMain {
+        border: 1px solid #69dbca;
+        border-radius: 5px;
+        font-size: 13px;
+        background: #fff;
+    }
+
+    .categaryMain>div {
+        height: 45px;
+        padding: 5px;
+    }
+
+    .categaryMain>div:nth-child(2n+1) {
+        background: #dcf3e8;
+    }
+
+    .categaryMain .result {
+        padding: 5px 5px;
+    }
+
+    .inspectDate>div:first-child,
+    .dateList div {
+        width: 25%;
+    }
+
+    .inspectDate>div:last-child {
+        width: 75%;
+    }
+
+    .twoDate div {
+        width: 33.33%;
+    }
+
+    .correct {
+        position: relative;
+    }
+
+    .correct div,
+        {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    .categaryMain>div div.selected {
+        background: #49c2ca;
+        color: #fff;
+        border-radius: 5px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class='container'>
+        <div class='mainBody'>
+            <div class='categoryList'>
+                <div class='categaryMain'>
+                    <div class='dateList flex-wrap flex-spaceBetween'>
+                        <div style='opacity:0'>空白</div>
+                        <div class='flex-wrap flex-center' :class='{selected:dir == 1}' @click='selectedDir(1)'>＜R＞</div>
+                        <div class='flex-wrap flex-center' :class='{selected:dir == 2}' @click='selectedDir(2)'>＜L＞</div>
+                        <div class='flex-wrap flex-center' :class='{selected:dir == 3}' @click='selectedDir(3)'>＜U＞</div>
+                    </div>
+                    <div class='dateList flex-wrap flex-spaceBetween'>
+                        <div class='flex-wrap flex-center' :class='{selected:method == 1}' @click='seletedMethods(1)'>裸眼视力</div>
+                        <div class='flex-wrap flex-center'>{{nakedRight.num}}</div>
+                        <div class='flex-wrap flex-center'>{{nakedLeft.num}}</div>
+                        <div class='flex-wrap flex-center'>{{nakedU.num}}</div>
+                    </div>
+                    <div class='dateList flex-wrap flex-spaceBetween'>
+                        <div class='flex-wrap flex-center' :class='{selected:method == 2}' @click='seletedMethods(2)'>矫正视力</div>
+                        <div class='flex-wrap flex-center'>{{correctRight.num}}</div>
+                        <div class='flex-wrap flex-center'>{{correctLeft.num}}</div>
+                        <div class='flex-wrap flex-center'>{{correctU.num}}</div>
+                    </div>
+                    <div class='inspectDate flex-wrap flex-spaceBetween'>
+                        <div class='flex-wrap flex-center'>矫正方式</div>
+                        <div class='correct'>
+                            <!-- <div class='flex-wrap flex-center'>{{correctMes}}</div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/basic.js"></script>
+<script type="text/javascript">
+apiready = function() {
+    ble = api.require('ble');
+    let vm = new Vue({
+        el: '.container',
+        data: {
+            test: '测试',
+            bluetouchFlag: false, // 判断蓝牙适配器
+            bluetoochArr: [], // 搜索到的name中包含 'SE' 所有蓝牙
+            bluetouchObj: {}, // 选择的蓝牙对象
+            userInfo: {}, // 用户信息
+            cFlag: false, // 判断蓝牙列表头部的展示
+            nakedRight: {}, // 裸眼右眼数据
+            nakedLeft: {}, // 裸眼左眼数据
+            nakedU: {}, // 裸眼双眼
+            correctRight: {}, // 矫正右眼
+            correctLeft: {}, // 矫正左眼
+            correctU: {}, // 矫正双眼
+            method: 1, // 1:裸眼 2:矫正
+            dir: 1, // 1:右眼 2:左眼 3:双眼
+        },
+        mounted() {
+            this.bluetouchObj = api.pageParam.bluetouchObj;
+            // alert(JSON.stringify(this.bluetouchObj))
+            this.initBle();
+        },
+        methods: {
+            selectedDir(dir) {
+                this.dir = dir;
+            },
+            seletedMethods(method) {
+                this.method = method;
+            },
+            initBle() {
+                let self = this;
+                ble.initManager({
+                    single: true,
+                }, function(ret) {
+                    if (ret.state == 'poweredOn') {
+                        self.scanBle();
+                    }
+                })
+            },
+            scanBle() {
+                let self = this;
+                ble.scan({
+                    // clean: true,
+                    // serviceUUIDs:[self.bluetouchObj.uuid],
+                }, function(ret) {
+                    if (ret.status) {
+                        setTimeout(() => {
+                            self.getBle();
+                        }, 1500)
+                    }
+                })
+            },
+            getBle() {
+                let self = this;
+                bluetouchObj = self.bluetouchObj;
+                ble.getPeripheral(function(ret) {
+                    if (ret) {
+                        ble.stopScan();
+                        for (let i = 0, len = ret.peripherals.length; i < len; i++) {
+                            if (ret.peripherals[i].uuid == bluetouchObj.uuid && ret.peripherals[i].name != bluetouchObj.name) {
+                                bluetouchObj.name = ret.peripherals[i].name;
+                                bluetouchObj.num = bluetouchObj.name.substring(3);
+                                bluetouchObj.vision = calculaEData(bluetouchObj.name.substring(3));
+                                if (self.method == 1 && self.dir == 1) {
+                                    self.nakedRight = JSON.parse(JSON.stringify(bluetouchObj));
+                                } else if (self.method == 1 && self.dir == 2) {
+                                    self.nakedLeft = JSON.parse(JSON.stringify(bluetouchObj));
+                                } else if (self.method == 1 && self.dir == 3) {
+                                    self.nakedU = JSON.parse(JSON.stringify(bluetouchObj));
+                                } else if (self.method == 2 && self.dir == 1) {
+                                    self.correctRight = JSON.parse(JSON.stringify(bluetouchObj));
+                                } else if (self.method == 2 && self.dir == 2) {
+                                    self.correctLeft = JSON.parse(JSON.stringify(bluetouchObj));
+                                } else {
+                                    self.correctU = JSON.parse(JSON.stringify(bluetouchObj));
+                                }
+                                break;
+                            }
+                        }
+                        self.scanBle();
+                    }
+                })
+            },
+        }
+    })
+}
+</script>
